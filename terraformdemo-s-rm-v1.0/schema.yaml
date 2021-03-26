@@ -1,0 +1,191 @@
+# Title shown in Application Information tab.
+title: "Magento App  variable"
+# Sub Title shown in Application Information tab.
+description: "Magento App on OCI"
+informationalText: "Magento App information"
+schemaVersion: 1.1.0
+version: "20200918"
+locale: "en"
+
+variableGroups:
+  - title: General Configuration
+    visible: false
+    variables:
+      - compartment_ocid    
+      - region
+      - tenancy_ocid
+      - image_id
+      - ssh_private_key
+  
+  - title: Company information
+    visible: true
+    variables:
+      - company_tag
+      - environment
+
+  - title: MySQL information
+    visible: true
+    variables:
+      - admin_username
+      - admin_password
+      - mysql_shape
+
+  - title: Compute
+    visible: true
+    variables:
+      - vm_shape
+      - instance_ocpus
+      - instance_memory
+      - num_nodes
+      - boot_volume_size_in_gbs
+      - ssh_public_key
+
+  - title: Network
+    visible: true
+    variables:
+      - vcn_cidr
+      - pub_sub_cidr
+      - priv_sub_cidr
+
+
+variables:
+  region:
+    type: oci:identity:region:name
+    visible: false
+    required: true
+    title: ${Messages.solutionsHub.genericVariables.region.title()}
+    description: ${Messages.solutionsHub.genericVariables.region.description()}
+
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    title: Compartment
+    description: Compartment where you want to create the solution resources
+
+  company_tag:
+    type: string
+    required: true
+    title: Company Name
+    description: Company deploy Magento app
+  
+  environment:
+    type: string
+    required: true
+    title: dev prod env
+    description: Magento dev or prod
+
+  mysql_shape:
+    type: string
+    required: true
+    title: MySQL Dataservice shape
+    description: MySQL Dataservice shape info
+
+  admin_username:
+    type: string
+    required: true
+    title: mysql  username
+    description: mysql admin username
+
+  admin_password:
+    type: password
+    required: true
+    confirmation: true
+    title: mysql password
+    description: mysql password of admin
+
+  vcn_cidr:
+    type: string
+    visible: true
+    required: false
+    default : "172.16.0.0/16"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: VCN of Magento
+    description: VCN of Magento
+
+  pub_sub_cidr:
+    type: string
+    required: true
+    default: "172.16.1.0/24"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: "public subnet of VCN"
+    description: "public subnet of VCN"
+
+  priv_sub_cidr:
+    type: string
+    required: true
+    default: "172.16.2.0/24"
+    pattern: "^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9]).(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\\/(3[0-2]|[1-2]?[0-9])$"
+    title: private subnet of VCN
+    description: private subnet of VCN
+
+  vm_shape:
+    type: oci:core:instanceshape:name
+    required: true
+    default: "VM.Standard.E3.Flex"
+    dependsOn:
+      compartmentId: compartment_ocid
+    title: compute shape  of webapp
+    description: vm shape of webapp
+
+  instance_ocpus:
+    type: integer
+    required: true
+    default: "1"
+    title: OCPU of Compute Shape
+    description: OCPU of Compute Shape
+    visible:
+      and:
+        - eq:
+          - vm_shape 
+          - "VM.Standard.E3.Flex"
+
+  instance_memory:
+    type: integer
+    required: true
+    default: "8"
+    title: Memory of Compute Shape
+    description: Memory of Compute Shape
+    visible:
+      and:
+        - eq:
+          - vm_shape 
+          - "VM.Standard.E3.Flex"
+
+  boot_volume_size_in_gbs:
+    type: integer
+    required: true
+    default: "100"
+    title: "Boot Volume  of Compute"
+    description: vm shape of webapp
+
+  num_nodes:
+    type: integer
+    required: true
+    default: "1"
+    title:  "Number of VM Instance"
+    description: "Number of VM Instance"
+
+  ssh_public_key:
+    type: oci:core:ssh:publickey
+    required: true
+    title: "ssh public key  of webapp"
+    description: "ssh public key  of webapp"
+
+outputs:
+  app-publicip:
+    title: "Compute Instance Public IP"
+    displayText: "Public IP of Web instance"
+    type: string
+    visible: true
+
+  loadbalancer-ip:
+    title: "load balancer Public IP"
+    displayText: "LB public IP"
+    type: string
+    visible: true
+  
+  mysql-ip:
+    title: "MySQL Private IP"
+    displayText: "MySQL Private IP"
+    type: string
+    visible: true
