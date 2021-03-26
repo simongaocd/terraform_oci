@@ -1,5 +1,6 @@
-This is Terraform on Oracle Cloud Infrastructure - OCI.
-#1, single(#terraformdemo-single) 
+## This is Terraform on Oracle Cloud Infrastructure - OCI.
+
+#1, [Single]([terraformdemo-single](https://github.com/simongaocd/terraform_oci/tree/master/terraformdemo-single)) 
 Load Balancer -> (1/2)  instances-> MySQL Database service
 
 #2,Auto Scaling
